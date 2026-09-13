@@ -10,10 +10,11 @@ Designed to run identically on a small city extract (local development) or
 a full Kenya extract (production-scale experiments) — region is a
 configuration input, never a hardcoded assumption.
 
-## Status: Phase 1 — Architecture & Design
+## Status: Phase 2 — Ingestion
 
-No application code yet. This phase defines the system before it's built.
-Start here:
+Phase 1 (architecture/data model/roadmap, no code) is complete. Phase 2
+(OSM ingestion) is built and tested. Start with the design docs, then see
+"Running ingestion" below to actually use it.
 
 - **[docs/architecture.md](docs/architecture.md)** — data flow, every
   technology choice and why, repository structure rationale, scaling
@@ -29,6 +30,36 @@ Start here:
   reproducible experiments the project runs.
 - **[docs/roadmap.md](docs/roadmap.md)** — the 12-phase build plan and the
   "done" criteria for each phase.
+
+## Running ingestion
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+
+# Real regional data (needs normal internet access to BBBike/Geofabrik):
+python scripts/ingest.py configs/cities/nairobi.yaml   # small city, local dev
+python scripts/ingest.py configs/cities/kenya.yaml     # full country, production-scale
+
+# Network-restricted environment (e.g. this project's own sandbox, which
+# cannot reach Geofabrik/BBBike/Overpass at all — only package registries):
+python scripts/ingest.py configs/cities/sandbox_test.yaml
+```
+
+The `sandbox_test.yaml` config resolves to a small `.osm.pbf` bundled
+inside the `pyrosm` package itself, so it needs no network access — it
+proves the pipeline (download/resolve → parse → validate → write
+GeoParquet) works, but it is **not** Kenyan data (see the file for
+details). `nairobi.yaml` and `kenya.yaml` run the identical pipeline
+against real extracts; nothing in the code differs between them. Run
+`pytest tests/` to execute the same pipeline as an automated test.
+
+Each run writes, under `data/` (gitignored):
+- `data/raw/<region>/` — the extract itself, `source_extract.json`
+  (provenance: source, checksum, download time, ODbL notice), and a
+  `validation_report.json`.
+- `data/processed/<region>/` — `raw_ways.parquet` / `raw_nodes.parquet`
+  (GeoParquet, CRS-aware).
 
 ## Repository layout
 

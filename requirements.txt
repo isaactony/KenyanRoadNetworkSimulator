@@ -1,0 +1,18 @@
+# Pinned to what Phase 2 was developed and tested against.
+# Split into requirements-{api,dashboard-build,...}.txt in later phases if
+# dependency sets diverge enough to justify it; one file is still accurate
+# for the ingestion-only surface built so far.
+geopandas==1.1.4
+numpy==2.4.6
+pandas==3.0.5
+pandera==0.33.1
+pyarrow==25.0.1
+pydantic==2.13.5
+pyogrio==0.13.0
+pyproj==3.7.2
+pyrosm==0.13.1
+PyYAML==6.0.1
+shapely==2.1.2
+
+# test tooling
+pytest==9.1.1

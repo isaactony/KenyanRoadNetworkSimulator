@@ -19,6 +19,27 @@ just declared.
 | **11. Containerization** | Dockerfiles for API/batch, `docker-compose.yml` (Postgres+PostGIS, API, dashboard), CI running tests in containers | Makes local reproducibility real (not "works on my machine") and produces the exact images Phase 12 deploys | `docker-compose up` gives a working stack from a clean checkout; GitHub Actions green |
 | **12. AWS deployment** | Terraform/CDK for the architecture in `architecture.md` §7 (S3, RDS, Lambda+API Gateway or Fargate, ECR, EventBridge, CloudWatch, optional Glue/Athena) | Last, because it should deploy something already proven to work locally, not be debugged in the cloud | Deployed stack reachable over the internet, API responds, cost within the estimated range; teardown instructions included |
 
+## Phase 2 status: done, with one caveat
+
+The ingestion pipeline (`src/resilience/ingestion/`, `scripts/ingest.py`) is
+built and tested: resolve extract → pyrosm parse → pandera validation →
+GeoParquet processed layer → `source_extracts` provenance JSON. 12 unit +
+integration tests pass (`pytest tests/`).
+
+**Caveat**: the sandboxed environment this was built in has no outbound
+network access to Geofabrik, BBBike, or the Overpass API (its egress
+allowlist covers package registries only) — see README.md "Running
+ingestion" for what that means and how it was worked around. The pipeline
+was therefore validated end-to-end against a small real `.osm.pbf` bundled
+with the `pyrosm` package (`configs/cities/sandbox_test.yaml`) rather than
+an actual Nairobi/Kenya extract. `configs/cities/nairobi.yaml` and
+`kenya.yaml` are written and unit-tested for parsing, but have not
+themselves been run — `scripts/ingest.py configs/cities/nairobi.yaml` is
+the very next command to run in any environment with normal internet
+access (or pointed at a manually-downloaded file via a `local_path`
+source). Nothing in the pipeline is Nairobi-specific or fixture-specific;
+the config is the only thing that changes.
+
 ## Sequencing notes
 
 - Phases 2–4 must happen in order (can't build a graph from unvalidated

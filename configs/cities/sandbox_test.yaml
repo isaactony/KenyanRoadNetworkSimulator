@@ -1,0 +1,18 @@
+# NOT a real place. This config exists only to run and test the ingestion
+# pipeline inside network-restricted environments (like the sandbox this
+# project was first built in, which has no egress to Geofabrik/BBBike/
+# Overpass — see README.md "Running ingestion").
+#
+# `pyrosm_test_fixture` resolves to a small .osm.pbf that ships inside the
+# installed `pyrosm` package itself (used for pyrosm's own test suite), so
+# no network access is needed at all. It happens to cover an area in
+# Finland, not Kenya. Use configs/cities/nairobi.yaml or kenya.yaml for any
+# real analysis; use this only to prove the pipeline itself works.
+name: sandbox_test_fixture
+region_type: custom_polygon
+projected_crs_epsg: 32635  # UTM 35N — matches the fixture's real-world location, not Kenya
+source:
+  type: pyrosm_test_fixture
+  dataset: test_pbf
+license_notice: "(C) OpenStreetMap contributors, ODbL 1.0 -- bundled pyrosm test fixture, NOT Kenya data"
+notes: "Sandbox/CI fixture only. See comment above."

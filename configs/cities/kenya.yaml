@@ -1,0 +1,10 @@
+# Full-country extract for production-scale experiments (docs/roadmap.md
+# Phase 10). Same pipeline as configs/cities/nairobi.yaml — only the source
+# and name differ; nothing in src/resilience branches on which region this is.
+name: kenya
+region_type: country
+projected_crs_epsg: 32737  # UTM zone 37S covers Kenya adequately for this project's accuracy needs
+source:
+  type: url
+  url: https://download.geofabrik.de/africa/kenya-latest.osm.pbf
+license_notice: "(C) OpenStreetMap contributors, ODbL 1.0"

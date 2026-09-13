@@ -1,0 +1,20 @@
+# Small-city extract for local development (docs/roadmap.md Phase 2).
+#
+# NOTE: fetching this URL requires outbound network access to BBBike, which
+# is not available from every environment this project runs in (e.g. it is
+# blocked by this session's sandbox egress policy — see README.md
+# "Running ingestion" for what that means and how to work around it). This
+# config is what a normal development machine or CI runner with internet
+# access uses; it is not run directly inside network-restricted sessions.
+name: nairobi
+region_type: city
+projected_crs_epsg: 32737  # UTM zone 37S — appropriate for the Nairobi area
+source:
+  type: url
+  url: https://download.bbbike.org/osm/bbbike/Nairobi/Nairobi.osm.pbf
+license_notice: "(C) OpenStreetMap contributors, ODbL 1.0"
+notes: >
+  BBBike's Nairobi extract is used (rather than cutting a bbox from the
+  Kenya extract with osmium) because it is already sized for fast local
+  iteration. Swap `source` for a `local_path` pointing at a manually
+  downloaded file if this URL ever moves.
